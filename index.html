@@ -107,10 +107,56 @@
       letter-spacing: 0.03em;
     }
 
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.42rem;
+      margin-top: 1.05rem;
+      z-index: 3;
+    }
+
+    .ctrl-btn {
+      appearance: none;
+      border: 1px solid rgba(165, 185, 255, 0.2);
+      background: rgba(8, 12, 34, 0.56);
+      color: rgba(235, 240, 255, 0.86);
+      font-family: inherit;
+      font-size: 0.72rem;
+      padding: 0.34rem 0.64rem;
+      border-radius: 8px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+    }
+
+    .ctrl-btn span.key {
+      color: var(--accent);
+      margin-right: 0.22rem;
+    }
+
+    .ctrl-btn:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(24, 34, 86, 0.76);
+    }
+
+    .ctrl-btn:active {
+      transform: scale(0.96);
+    }
+
     @media (max-width: 600px) {
       #bouquet-canvas {
-        height: min(60vh, 450px);
-        min-height: 300px;
+        height: min(54vh, 420px);
+        min-height: 280px;
+      }
+      .controls-bar {
+        gap: 0.32rem;
+        margin-top: 0.8rem;
+      }
+      .ctrl-btn {
+        font-size: 0.66rem;
+        padding: 0.3rem 0.52rem;
       }
       .dedication-line {
         font-size: 0.76rem;
@@ -128,6 +174,14 @@
       <div class="caption-block">
         <h1 class="palette-title" id="palette-title">Neon Bloom</h1>
         <p class="dedication-line" id="dedication-line">no reason flower, because u deserved to be loved everyday, thank u for make my day better since u come, thank u for everything lia &lt;3</p>
+      </div>
+      <div class="controls-bar" id="controls-bar" role="toolbar" aria-label="Bouquet controls">
+        <button type="button" class="ctrl-btn" id="btn-new"><span class="key">[space]</span>new</button>
+        <button type="button" class="ctrl-btn" id="btn-shape"><span class="key">[f]</span>shape</button>
+        <button type="button" class="ctrl-btn" id="btn-flowers"><span class="key">[t]</span>flowers</button>
+        <button type="button" class="ctrl-btn" id="btn-colors"><span class="key">[c]</span>colors</button>
+        <button type="button" class="ctrl-btn" id="btn-minus"><span class="key">[-]</span>fewer</button>
+        <button type="button" class="ctrl-btn" id="btn-plus"><span class="key">[+]</span>more</button>
       </div>
     </div>
   </main>
@@ -773,6 +827,41 @@
       }
 
       const stageWrap = document.getElementById('stage-wrap');
+      const controlsBar = document.getElementById('controls-bar');
+
+      controlsBar.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+      });
+
+      document.getElementById('btn-new').addEventListener('click', () => {
+        state.seed = Math.floor(Math.random() * 1000000);
+        rebuildAll();
+      });
+
+      document.getElementById('btn-shape').addEventListener('click', () => {
+        state.shapeIndex = (state.shapeIndex + 1) % SHAPES.length;
+        rebuildAll();
+      });
+
+      document.getElementById('btn-flowers').addEventListener('click', () => {
+        state.flowerIndex = (state.flowerIndex + 1) % FLOWER_TYPES.length;
+        rebuildAll();
+      });
+
+      document.getElementById('btn-colors').addEventListener('click', () => {
+        state.paletteIndex = (state.paletteIndex + 1) % PALETTES.length;
+        rebuildAll();
+      });
+
+      document.getElementById('btn-minus').addEventListener('click', () => {
+        state.count = Math.max(10, state.count - 4);
+        rebuildAll();
+      });
+
+      document.getElementById('btn-plus').addEventListener('click', () => {
+        state.count = Math.min(36, state.count + 4);
+        rebuildAll();
+      });
 
       stageWrap.addEventListener('pointerdown', (e) => {
         state.dragging = true;
